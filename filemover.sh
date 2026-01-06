@@ -27,15 +27,16 @@ while [[ $file_extension = "" ]]; do
 done
 
 # Запросить новое расширение для файлов.
+read -p "Введите новое расширения: " new_file_extension
 
 # Проверка существования исходной директории и целевой директории
-if [ ! -d "$source_directory" || ! -r "$source_directory]; then
+if [ ! -d "$source_directory" ]; then
 echo  "Ошибка: исходная директория не существует или недоступна"
 exit 1
 fi
-if [[ ! -d "$target_directory" || ! -w "$target_directory" ]]; then
+if [ ! -d "$target_directory" ]; then
 echo "Целевая директория не существует. Создаю"
-mkdir -p "$target_dir"
+mkdir -p "$target_directory"
 fi
 echo "Проверка пройдена успешно"
 
@@ -48,6 +49,14 @@ echo "Ошибка: файлы с расширением .$file_extension не �
  exit 1
 fi
 # Копирование файлов с указанным расширением в целевую директорию
+for file in "$source_directory"/*."$file_extension"; do
+    filename=$(basename "$file")
+    name_without_ext="${filename%.*}"
+
+    cp "$file" "$target_directory/$name_without_ext.$new_file_extension"
+
+    echo "Скопирован файл: $filename -> $name_without_ext.$new_file_extension"
+done
 
 # Архивация исходных файлов.
 # 7.Создание архива исходных файлов.
